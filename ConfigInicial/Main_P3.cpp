@@ -1,3 +1,10 @@
+/*******************
+
+Práctica 2: : Proyecciones y transformaciones          Rodríguez Montes de Oca Andrés
+Fecha de entrega: 24 de agosto de 2024		     317035867
+
+*******************/
+
 #include<iostream>
 
 //#define GLEW_STATIC
