@@ -29,6 +29,7 @@ Fecha de entrega: 8 de septiembre de 2024		     317035867
 #include "SOIL2/SOIL2.h"
 #include "stb_image.h"
 
+
 // Properties
 const GLuint WIDTH = 800, HEIGHT = 600;
 int SCREEN_WIDTH, SCREEN_HEIGHT;
@@ -104,6 +105,7 @@ int main( )
     // Load models
     Model dog((char*)"Models/RedDog.obj");
     Model cat((char*)"Models/12221_Cat_v1_l3.obj");
+    Model desert((char*)"Models/Egyptian pyramids and desert-bl.obj");
     glm::mat4 projection = glm::perspective( camera.GetZoom( ), ( float )SCREEN_WIDTH/( float )SCREEN_HEIGHT, 0.1f, 100.0f );
     
     
@@ -144,6 +146,13 @@ int main( )
         model = glm::rotate(model, 4.71f, glm::vec3(1.0f, 0.0f, 0.0f));
         glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         cat.Draw(shader);
+
+        
+     // model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+        model = glm::rotate(model, 4.71f, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, glm::vec3(0.0f, 150.0f, 250.0f));
+        glUniformMatrix4fv(glGetUniformLocation(shader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        desert.Draw(shader);
 
         // Swap the buffers
         glfwSwapBuffers( window );
