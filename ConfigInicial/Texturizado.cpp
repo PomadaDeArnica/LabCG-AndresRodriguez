@@ -1,7 +1,7 @@
 /*******************
 
-Actividad 6: Texturizado          Rodríguez Montes de Oca Andrés
-Fecha de entrega: 22 de septiembre de 2024		     317035867
+Práctica 6: Texturizado          Rodríguez Montes de Oca Andrés
+Fecha de entrega: 27 de septiembre de 2024		     317035867
 
 *******************/
 
@@ -107,19 +107,62 @@ int main()
 	GLfloat vertices[] =
 	{
 		// Positions            // Colors              // Texture Coords
-		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.0f,
-		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		1.0f,0.0f,
-		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    1.0f,1.0f,
-		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,1.0f,
+		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.25f, //0 BLANCA
+		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		0.25f,0.25f, //1
+		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    0.25f,0.5f, //2
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.0f,0.5f, //3
 
+
+		-0.5f, -0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.25f, //4 MORADA
+		0.5f, -0.5f, -1.0f,	   1.0f, 1.0f,1.0f,			0.5f,0.25f,//5
+		0.5f,  0.5f, -1.0f,     1.0f, 1.0f,1.0f,	    0.5f,0.5f,//6
+		-0.5f,  0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.5f, //7
+
+
+		0.5f, -0.5f, 0.0f,	   1.0f, 1.0f,1.0f,		0.25f,0.50f, //2 8 // ROSA
+		0.5f,  0.5f, -1.0f,     1.0f, 1.0f,1.0f,	 0.5f,0.5f,//6  9
+		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.25f,0.25f, //1  10
+		0.5f, -0.5f, -1.0f,	   1.0f, 1.0f,1.0f,			0.5f,0.25f,//5  11
+
+
+		-0.5f,  0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.5f, //7  12 TURQUESA
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,      1.0f,0.5f, //3  13
+		-0.5f, -0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.25f, //4  14
+		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		1.0f,0.25f, //0  15
+		 
+		0.5f,  0.5f, 0.0f,     1.0f, 1.0f,1.0f,	    0.5f,0.75f, //2  16   AZUL
+		-0.5f,  0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.75f,0.75f, //3  17
+		-0.5f,  0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.5f, //7   18
+		0.5f,  0.5f, -1.0f,     1.0f, 1.0f,1.0f,	    0.5f,0.5f,//6  19
+
+		0.5f, -0.5f, -1.0f,	   1.0f, 1.0f,1.0f,			0.5f,0.25f,//5  20
+		-0.5f, -0.5f, -1.0f,    1.0f, 1.0f,1.0f,		0.75f,0.25f, //4  21
+		0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.5f,0.0f, //1 22
+		-0.5f, -0.5f, 0.0f,    1.0f, 1.0f,1.0f,		0.75f,0.0f, //0 23
+
+		//4 V x cara
 		
 	};
 
 	GLuint indices[] =
 	{  // Note that we start from 0!
-		0,1,3,
-		1,2,3
-	
+		0,1,3, //BLANCO
+		1,2,3,
+
+		4,5,7, //MORADO
+		5,6,7,
+
+		14,15,12, //TURQUESA
+		15,13,12,
+
+		11,1,6,  //ROSA
+		1,2,6,
+
+		23,22,21, //ROJO
+		22,20,21,
+
+		17,16,18, //AZUL
+		16,19,18
 	};
 
 	// First, set the container's VAO (and VBO)
@@ -158,13 +201,13 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST_MIPMAP_NEAREST);
 	// Diffuse map
-	image = stbi_load("images/brick.png", &textureWidth, &textureHeight, &nrChannels,0);
+	image = stbi_load("images/dice.png", &textureWidth, &textureHeight, &nrChannels,0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	if (image)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, textureWidth, textureHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureWidth, textureHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -213,7 +256,7 @@ int main()
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		// Draw the light object (using light's vertex attributes)
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
