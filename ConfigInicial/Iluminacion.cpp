@@ -1,7 +1,7 @@
 /******************** 
 * 
-Actividad 7: Materiales E Iluminación           Rodríguez Montes de Oca Andrés
-Fecha de entrega: 29 de septiembre de 2024		     317035867
+Práctica 7: Materiales E Iluminación           Rodríguez Montes de Oca Andrés
+Fecha de entrega: 04 de octubre de 2024		     317035867
 
 *******************/
 
@@ -43,14 +43,19 @@ bool keys[1024];
 GLfloat lastX = 400, lastY = 300;
 bool firstMouse = true;
 
+float rotationAngle = 0.0f;
+float rotationSpeed = 0.05f;
 
 // Light attributes
-glm::vec3 lightPos(0.5f, 0.5f, 2.5f);
+glm::vec3 lightPos(2.0f, 0.0f, 5.0f);
+glm::vec3 lightPos1(2.0f, 0.0f, -5.0f);
 float movelightPos = 0.0f;
 GLfloat deltaTime = 0.0f;
 GLfloat lastFrame = 0.0f;
 float rot = 0.0f;
 bool activanim = false;
+
+bool noche = false;
 
 int main()
 {
@@ -109,6 +114,8 @@ int main()
 
     // Load models
     Model cat((char*)"Models/12221_Cat_v1_l3.obj");
+    Model desert((char*)"Egyptian pyramids and desert - bl.obj");
+    
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     float vertices[] = {
@@ -215,17 +222,38 @@ int main()
 
         
         lightingShader.Use();
-        GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
+        
         GLint viewPosLoc = glGetUniformLocation(lightingShader.Program, "viewPos");
-        glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
+       
         glUniform3f(viewPosLoc, camera.GetPosition().x, camera.GetPosition().y, camera.GetPosition().z);
 
 
         // Set lights properties
         
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.3f, 0.3f, 0.3f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
-        glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 0.0f, 0.0f, 0.0f);
+        //if sentenica luz1 o luz2
+        
+        noche = false;
+        if (noche == true)
+        {
+            GLint lightPosLoc = glGetUniformLocation(lightingShader.Program, "light.position");
+            glUniform3f(lightPosLoc, lightPos.x + movelightPos, lightPos.y + movelightPos, lightPos.z + movelightPos);
+
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.8f, 0.8f, 0.8f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.2f, 0.7f, 0.8f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 1.0f, 1.0f);
+        }
+        else
+        {
+            GLint lightPosLoc1 = glGetUniformLocation(lightingShader.Program, "light.position");
+
+
+            glUniform3f(lightPosLoc1, lightPos1.x + movelightPos, lightPos1.y + movelightPos, lightPos1.z + movelightPos);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.ambient"), 0.8f, 0.8f, 0.8f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.diffuse"), 0.8f, 0.0f, 0.0f);
+            glUniform3f(glGetUniformLocation(lightingShader.Program, "light.specular"), 1.0f, 1.0f, 1.0f);
+        }
+        //
+
 
         glm::mat4 view = camera.GetViewMatrix(); 
         glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
@@ -236,9 +264,6 @@ int main()
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.diffuse"), 0.5f, 0.5f, 0.5f);
         glUniform3f(glGetUniformLocation(lightingShader.Program, "material.specular"), 1.0f, 1.0f, 1.0f);
         glUniform1f(glGetUniformLocation(lightingShader.Program, "material.shininess"), 0.8f);
-
-
-
 
 
 
@@ -255,19 +280,50 @@ int main()
 
         glBindVertexArray(0);
 
-
+        ////glm::mat4 model(1);
+        //model = glm::scale(model, glm::vec3(100.05f, 100.05f, 100.05f));
+        ////model = glm::rotate(model, 4.71f, glm::vec3(1.0f, 0.0f, 0.0f));
+        //glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        //glBindVertexArray(VAO);
+        //desert.Draw(lightingShader);
+        //glBindVertexArray(0);
 
 
         lampshader.Use();
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
         model = glm::mat4(1.0f);
+        model = glm::rotate(model, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f));
         model = glm::translate(model, lightPos + movelightPos);
         model = glm::scale(model, glm::vec3(0.3f));
         glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
         glBindVertexArray(VAO);
+        //luna.draw
         glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
+
+
+        lampshader.Use();
+        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+        model = glm::mat4(1.0f);
+        model = glm::rotate(model, rotationAngle, glm::vec3(1.0f, 0.0f, 0.0f));
+        model = glm::translate(model, lightPos1 + movelightPos);
+        model = glm::scale(model, glm::vec3(0.3f));
+        
+        glUniformMatrix4fv(glGetUniformLocation(lampshader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glBindVertexArray(VAO);
+        //sol.draw
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+
+
+        
+
+
+
+
+
 
         // Swap the buffers
         glfwSwapBuffers(window);
@@ -305,6 +361,12 @@ void DoMovement()
         camera.ProcessKeyboard(RIGHT, deltaTime);
     }
 
+    //if (rotationAngle > 180)
+    //{
+    //    noche = true;
+    //}
+
+
     if (activanim)
     {
         if (rot > -90.0f)
@@ -336,13 +398,15 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
     if (keys[GLFW_KEY_O])
     {
        
-        movelightPos += 0.1f;
+        //movelightPos += 0.1f;
+        rotationAngle += rotationSpeed;
     }
 
     if (keys[GLFW_KEY_L])
     {
         
-        movelightPos -= 0.1f;
+        //movelightPos -= 0.1f;
+       rotationAngle -= rotationSpeed;
     }
 
 
