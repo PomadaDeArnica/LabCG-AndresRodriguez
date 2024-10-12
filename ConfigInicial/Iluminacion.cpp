@@ -113,8 +113,8 @@ int main()
 
 
     // Load models
-    Model cat((char*)"Models/12221_Cat_v1_l3.obj");
-    Model desert((char*)"Egyptian pyramids and desert - bl.obj");
+    Model cat((char*)"Models/12221_Cat_v1_l3.obj"); 
+    Model desert((char*)"Egyptian pyramids and desert-bl.obj");
     
     glm::mat4 projection = glm::perspective(camera.GetZoom(), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
@@ -280,13 +280,13 @@ int main()
 
         glBindVertexArray(0);
 
-        ////glm::mat4 model(1);
-        //model = glm::scale(model, glm::vec3(100.05f, 100.05f, 100.05f));
-        ////model = glm::rotate(model, 4.71f, glm::vec3(1.0f, 0.0f, 0.0f));
-        //glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
-        //glBindVertexArray(VAO);
-        //desert.Draw(lightingShader);
-        //glBindVertexArray(0);
+        //glm::mat4 model(1);
+        model = glm::scale(model, glm::vec3(100.05f, 100.05f, 100.05f));
+        //model = glm::rotate(model, 4.71f, glm::vec3(1.0f, 0.0f, 0.0f));
+        glUniformMatrix4fv(glGetUniformLocation(lightingShader.Program, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        glBindVertexArray(VAO);
+        desert.Draw(lightingShader);
+        glBindVertexArray(0);
 
 
         lampshader.Use();
