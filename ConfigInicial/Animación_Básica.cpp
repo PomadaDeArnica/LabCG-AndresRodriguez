@@ -1,7 +1,7 @@
 /********************
 *
-Actividad 9: Animación Básica          Rodríguez Montes de Oca Andrés
-Fecha de entrega: 15 de octubre de 2024		     317035867
+Práctica 9: Animación Básica          Rodríguez Montes de Oca Andrés
+Fecha de entrega: 18 de octubre de 2024		     317035867
 
 *******************/
 
@@ -50,6 +50,10 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 bool active;
+
+float angleDog = 0.0f;   // Ángulo de rotación
+float angleBall = 0.0f;
+float radius = 2.0f;  // Radio de la trayectoria circular
 
 // Positions of the point lights
 glm::vec3 pointLightPositions[] = {
@@ -108,7 +112,7 @@ float vertices[] = {
 glm::vec3 Light1 = glm::vec3(0);
 //Anim
 float rotBall = 0;
-bool AnimBall = false;
+bool AnimBall = true;
 float bounceBall = 0.0f;
 bool bounce = true;
 
@@ -215,10 +219,6 @@ int main()
 		// OpenGL options
 		glEnable(GL_DEPTH_TEST);
 
-		
-		
-		
-	
 
 		// Use cooresponding shader when setting uniforms/drawing objects
 		lightingShader.Use();
@@ -282,23 +282,30 @@ int main()
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-
 		glm::mat4 model(1);
-
-	
 		
-		//Carga de modelo 
+		//Carga de modelos
         view = camera.GetViewMatrix();	
 		model = glm::mat4(1);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		Piso.Draw(lightingShader);
 
 		model = glm::mat4(1);
+		float posXD = radius * cos(angleDog);  // Coordenada X basada en el ángulo
+		float posZD = radius * sin(angleDog);  // Coordenada Z basada en el ángulo
+		model = glm::translate(model, glm::vec3(posXD, 0.0f, posZD));
+		float rotationAngleDog = glm::atan(posZD, posXD)+180.0f;
+		//float rotationAngle = glm::radians(tan(angle) );
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, -(rotationAngleDog-45), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform1i(glGetUniformLocation(lightingShader.Program, "transparency"), 0);
 		Dog.Draw(lightingShader);
 
 		model = glm::mat4(1);
+		float posXB = radius * cos(angleBall);  // Coordenada X basada en el ángulo
+		float posZB = radius * sin(angleBall);  // Coordenada Z basada en el ángulo
+		model = glm::translate(model, glm::vec3(posXB, 0.0f, posZB));
 		glEnable(GL_BLEND);//Avtiva la funcionalidad para trabajar el canal alfa
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -337,7 +344,6 @@ int main()
 		glBindVertexArray(0);
 
 
-
 		// Swap the screen buffers
 		glfwSwapBuffers(window);
 	}
@@ -345,8 +351,6 @@ int main()
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
-
-
 
 	return 0;
 }
@@ -454,12 +458,10 @@ void KeyCallback(GLFWwindow *window, int key, int scancode, int action, int mode
 void Animation() {
 	if (AnimBall)
 	{
-		//rotBall += 0.2f;
-		//printf("%f", rotBall);
 		if (bounce)
 		{
 			bounceBall += 0.02f;
-			if (bounceBall >= 1.75f)
+			if (bounceBall >= 1.5f)
 			{
 				bounce = false;
 			}
@@ -467,13 +469,14 @@ void Animation() {
 		else
 		{
 			bounceBall -= 0.02f;
-			if (bounceBall <= -0.0f)
+			if (bounceBall <= 0.0f)
 			{
 				bounce = true;
 			}
 		}
-		
 	}
+	angleBall -= 0.01;
+	angleDog += 0.01;  
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
