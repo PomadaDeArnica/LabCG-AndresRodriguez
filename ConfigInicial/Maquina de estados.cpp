@@ -1,7 +1,7 @@
 /*******************
 
-Actividad 10: Animación por maquina de estados       Rodríguez Montes de Oca Andrés
-Fecha de entrega: 20 de octubre de 2024		     317035867
+Práctica 10: Animación por maquina de estados       Rodríguez Montes de Oca Andrés
+Fecha de entrega: 25 de octubre de 2024		        317035867
 
 *******************/
 
@@ -50,6 +50,7 @@ bool firstMouse = true;
 // Light attributes
 glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
 bool active;
+int estado = 0;
 
 // Positions of the point lights
 glm::vec3 pointLightPositions[] = {
@@ -523,10 +524,9 @@ void Animation() {
 	if (AnimDog)
 	{
 		rotDog -= 0.6f;
-		//printf("%f", rotBall);
 	}
 	
-	if (dogAnim==1 && dogPos.z <= 2.30f)
+	if (dogAnim==1 /* && dogPos.z <= 2.30f*/)
 	{
 		if (!step)
 		{
@@ -550,8 +550,85 @@ void Animation() {
 				step = false;
 			}
 		}
-		dogPos.z += 0.01;
+		//dogPos.z += 0.01;
+
+		switch (estado)
+		{
+		case 0:
+			
+			dogPos.z += 0.01f;
+			if (dogPos.z >= 2.5f) 
+			{
+				estado = 1;
+			}	
+			break;
+
+		case 1:
+			dogRot += 2.50f;
+			if (dogRot >= 90.0f)
+			{
+				estado = 2;
+				
+			}
+			break;
+
+		case 2:
+			dogPos.x += 0.01f;
+			if (dogPos.x >= 2.5f)
+			{
+				estado = 3;
+			}
+			break;
+
+		case 3:
+			dogRot += 2.50f;
+			if (dogRot >= 180.0f)
+			{
+				estado = 4;
+			}
+			break;
+
+		case 4:
+			dogPos.z -= 0.01f;
+			if (dogPos.z <= -2.5f) 
+			{
+				estado = 5;
+			}
+			break;
+
+		case 5:
+			dogRot += 2.50f;
+			if (dogRot >= 305.0f)
+			{
+				estado = 6;
+			}
+			break;
+
+		case 6: 
+			if (dogPos.x > 0.0f && dogPos.z < 0.0f) 
+			{
+				dogPos.x -= 0.01f;
+				dogPos.z += 0.01f;
+			}
+			else 
+			{
+				estado = 7;
+			
+			}
+			break;
+
+		case 7:
+			dogRot += 2.50f;
+			if (dogRot >= 360.0f)
+			{
+				estado = 0;
+				dogRot = 0.0f;
+			}
+			break;
+		}
+
 	}
+
 }
 
 void MouseCallback(GLFWwindow *window, double xPos, double yPos)
